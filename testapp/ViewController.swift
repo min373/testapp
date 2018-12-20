@@ -50,7 +50,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             //+ボタンからのセグエ
             let task = Task()
             task.date = Date()
-            task.category = "please choose the category"//ここにViewControllerに置いたラベルを定義
             
             let allTasks = realm.objects(Task.self)
             if allTasks.count != 0 {
@@ -130,8 +129,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     //検索処理-targetがカテゴリに設定されていれば表示
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        taskArray = try! Realm().objects(Task.self).filter("category == %@", searchBar.text!)
-        tableView.reloadData()
+        if(searchBar.text != ""){
+            //検索ボックスに何か入力されている時はcategoryで絞り込む
+            taskArray = try! Realm().objects(Task.self).filter("category == %@", searchBar.text!)
+            tableView.reloadData()
+        }else{
+            //検索ボックスが空白の時はフィルターを通さずに単純リロード
+            taskArray = try! Realm().objects(Task.self)
+            tableView.reloadData()
+        }
     }
     
 }
